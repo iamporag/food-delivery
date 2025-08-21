@@ -1,10 +1,10 @@
-const express = require("express");
-const { getFoods, createFood } = require("../controllers/foodController");
-const { protect, admin } = require("../middleware/authMiddleware");
+import {Router} from"express";
+import { getFoods, createFood } from"../controllers/foodController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", getFoods);
-router.post("/", protect, admin, createFood); // optional: add new food
+router.post("/", protect, admin, createFood); 
 
-module.exports = router;
+export default router;
