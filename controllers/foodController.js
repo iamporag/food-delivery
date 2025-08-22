@@ -1,9 +1,9 @@
-const Food = require("../models/Food").default;
+import {getFoods,createFood} from "../models/Food";
 
 // @desc    Get all foods
 // @route   GET /api/foods
 // @access  Public
-exports.getFoods = async (req, res) => {
+export async function getFoods(req, res) {
   try {
     const foods = await Food.find();
     res.json(
@@ -22,10 +22,10 @@ exports.getFoods = async (req, res) => {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
   }
-};
+}
 
 // Optional: Add a new food
-exports.createFood = async (req, res) => {
+export async function createFood(req, res) {
   try {
     const { name, description, price, image } = req.body;
     const food = await Food.create({ name, description, price, image });
@@ -37,4 +37,4 @@ exports.createFood = async (req, res) => {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
   }
-};
+}
