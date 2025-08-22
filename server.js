@@ -6,6 +6,7 @@ import cors from"cors";
 import connectDB from "./config/db.js";
 import foodRoutes from"./routes/foodRoutes.js";
 import userRoutes from"./routes/userRoutes.js";
+import restaurantRoutes from"./routes/restaurantRoutes.js";
 
 // Fix __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,7 @@ app.use("/api/users", userRoutes);
 // app.use("/api/foods", foodRoutes);
 // app.use("/api/orders", orderRoutes);
 app.use("/api/foods", foodRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => console.log(`✅ Server running on port ${PORT}`));
