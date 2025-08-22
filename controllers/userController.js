@@ -12,7 +12,7 @@ export const registerUser = async (req, res) => {
     if (userExists) return res.status(400).json({ message: "User already exists" });
 
     const user = await User.create({ name, email, password });
-    res.json({ _id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
+    res.json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -36,12 +36,17 @@ export const loginUser = async (req, res) => {
       return res.status(500).json({ message: "JWT_SECRET missing in .env" });
     }
 
-    res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user.id),
-    });
+    res.json(
+      {
+        "message": "User logged in successfully",
+        "data": {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          token: generateToken(user.id)
+        }
+      }
+    );
     console.log("📩 Incoming body:", req.body);
 
   } catch (err) {
@@ -57,10 +62,14 @@ export const getUserProfile = async (req, res) => {
     if (!user) {
       res.status(404).json({ message: "User not found", data: null });
     }
+    const userData = user.toObject();
+    delete userData.__v;
+    userData.id = userData._id;
+    delete userData._id;
     res.json(
       {
         "message": "User profile retrieved successfully",
-        "data": user
+        "data": userData
       }
     );
   } catch (err) {
