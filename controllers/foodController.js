@@ -1,4 +1,4 @@
-import {getFoods,createFood} from "../models/Food";
+import Food from "../models/Food.js";
 
 // @desc    Get all foods
 // @route   GET /api/foods
@@ -16,8 +16,8 @@ export async function getFoods(req, res) {
           delete foodData.__v;
           return foodData;
         })
-      }
-      , 200);
+      },
+      200);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
