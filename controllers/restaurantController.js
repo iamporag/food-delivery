@@ -5,7 +5,10 @@ import Restaurant from "../models/Restaurent.js";
 
 export const createRestaurant = async (req, res) => {
     try {
-        const restaurant = new Restaurant(req.body);
+        const restaurant = new Restaurant({
+            ...req.body,
+            picture: req.file ? `/uploads/${req.file.filename}` : null
+        });
         await restaurant.save();
         res.status(200).json(
             {
