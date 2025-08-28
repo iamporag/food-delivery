@@ -13,12 +13,11 @@ const restaurantSchema = new mongoose.Schema(
             },
             coordinates: {
                 type: [Number], // [longitude, latitude]
-                required: true,
+                required: false,
             },
         },
         picture: { type: String },
         rating: { type: Number, default: 0 },
-        products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }],
         openTime: { type: String },
         closeTime: { type: String },
     },

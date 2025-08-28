@@ -9,14 +9,14 @@ export const createRestaurant = async (req, res) => {
         await restaurant.save();
         res.status(200).json(
             {
-                "message": "Restaurant created successfully",
-                "data": restaurant
+                message: "Restaurant created successfully",
+                data: restaurant
             }
         )
     } catch (err) {
-        res.status(500).json({ 
-            "message": err.message,
-            "data": null
+        res.status(500).json({
+            message: err.message,
+            data: null
         });
     }
 };
@@ -24,15 +24,15 @@ export const createRestaurant = async (req, res) => {
 // Get all Restaurants
 export const getAllRestaurants = async (req, res) => {
     try {
-        const restaurants = await Restaurant.find().populate("products");
+        const restaurants = await Restaurant.find();
         res.status(200).json({
-            "message": "Restaurants fetched successfully",
-            "data": restaurants
+            message: "Restaurants fetched successfully",
+            data: restaurants
         });
     } catch (err) {
         res.status(500).json({
-            "message": err.message,
-            "data": null
+            message: err.message,
+            data: null
         });
     }
 };
@@ -43,18 +43,18 @@ export const getRestaurantById = async (req, res) => {
         const restaurant = await Restaurant.findById(req.params.id).populate("products");
         if (!restaurant) {
             return res.status(404).json({
-                "message": "Restaurant not found",
-                "data": null
+                message: "Restaurant not found",
+                data: null
             });
         }
         res.status(200).json({
-            "message": "Restaurant fetched successfully",
-            "data": restaurant
+            message: "Restaurant fetched successfully",
+            data: restaurant
         });
     } catch (err) {
         res.status(500).json({
-            "message": err.message,
-            "data": null
+            message: err.message,
+            data: null
         });
     }
 };
@@ -65,18 +65,18 @@ export const updateRestaurant = async (req, res) => {
         const restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!restaurant) {
             return res.status(404).json({
-                "message": "Restaurant not found",
-                "data": null
+                message: "Restaurant not found",
+                data: null
             });
         }
         res.status(200).json({
-            "message": "Restaurant updated successfully",
-            "data": restaurant
+            message: "Restaurant updated successfully",
+            data: restaurant
         });
     } catch (err) {
         res.status(500).json({
-            "message": err.message,
-            "data": null
+            message: err.message,
+            data: null
         });
     }
 };
@@ -87,18 +87,18 @@ export const deleteRestaurant = async (req, res) => {
         const restaurant = await Restaurant.findByIdAndDelete(req.params.id);
         if (!restaurant) {
             return res.status(404).json({
-                "message": "Restaurant not found",
-                "data": null
+                message: "Restaurant not found",
+                data: null
             });
         }
         res.status(200).json({
-            "message": "Restaurant deleted successfully",
-            "data": restaurant
+            message: "Restaurant deleted successfully",
+            data: restaurant
         });
     } catch (err) {
         res.status(500).json({
-            "message": err.message,
-            "data": null
+            message: err.message,
+            data: null
         });
     }
 };

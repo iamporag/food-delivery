@@ -5,24 +5,41 @@ import Food from "../models/Food.js";
 // @access  Public
 export async function getFoods(req, res) {
   try {
-    const foods = await Food.find();
-    res.json(
-      {
-        "message": "Food items retrieved successfully",
-        "data": foods.map(food => {
-          const foodData = food.toObject();
-          foodData.id = foodData._id;
-          delete foodData._id;
-          delete foodData.__v;
-          return foodData;
-        })
+    // Default values if not provided
+    const page = parseInt(req.query.page) || 1;  // current page
+    const limit = parseInt(req.query.limit) || 10; // items per page
+    const skip = (page - 1) * limit;
+
+    // Get total count
+    const totalFoods = await Food.countDocuments();
+
+    // Fetch foods with pagination
+    const foods = await Food.find()
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      message: "Food items retrieved successfully",
+      meta: {
+        total: totalFoods,
+        page,
+        limit,
+        totalPages: Math.ceil(totalFoods / limit),
       },
-      200);
+      data: foods.map(food => {
+        const foodData = food.toObject();
+        foodData.id = foodData._id;
+        delete foodData._id;
+        delete foodData.__v;
+        return foodData;
+      })
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
   }
 }
+
 
 // Optional: Add a new food
 export async function createFood(req, res) {

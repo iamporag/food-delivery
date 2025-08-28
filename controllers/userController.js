@@ -38,8 +38,8 @@ export const loginUser = async (req, res) => {
 
     res.json(
       {
-        "message": "User logged in successfully",
-        "data": {
+        message: "User logged in successfully",
+        data: {
           id: user.id,
           name: user.name,
           email: user.email,
@@ -68,8 +68,8 @@ export const getUserProfile = async (req, res) => {
     delete userData._id;
     res.json(
       {
-        "message": "User profile retrieved successfully",
-        "data": userData
+        message: "User profile retrieved successfully",
+        data: userData
       }
     );
   } catch (err) {
