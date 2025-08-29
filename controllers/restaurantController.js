@@ -104,9 +104,6 @@ export const updateRestaurant = async (req, res) => {
 
 
 /// Delete a Restaurant
-import Restaurant from "../models/Restaurent.js";
-import cloudinary from "../config/cloudinary.js"; // your cloudinary config
-
 export const deleteRestaurant = async (req, res) => {
     try {
         const restaurant = await Restaurant.findById(req.params.id);
