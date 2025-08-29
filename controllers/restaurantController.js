@@ -1,3 +1,4 @@
+import { url } from "inspector";
 import Restaurant from "../models/Restaurent.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -7,7 +8,7 @@ import { v2 as cloudinary } from "cloudinary";
 export const createRestaurant = async (req, res) => {
     try {
         const picture = req.file ? { url: req.file.path, public_id: req.file.filename } : null;
-        const restaurant = new Restaurant.create({
+        const restaurant = await Restaurant.create({
             ...req.body,
             picture,
         });
@@ -73,15 +74,12 @@ export const updateRestaurant = async (req, res) => {
         }
 
         // If new image uploaded, delete old one from Cloudinary
-        if (req.file) {
-            if (restaurant.picture?.public_id) {
-                await cloudinary.uploader.destroy(restaurant.picture.public_id);
-            }
+        if (req.file && restaurant.picture?.public_id) {
+            await cloudinary.uploader.destroy(restaurant.picture.public_id);
+        }
 
-            restaurant.picture = {
-                url: req.file.path,
-                public_id: req.file.filename,
-            };
+        if (req.file) {
+            restaurant.picture = { url: req.file.path, public_id: req.file.filename };
         }
 
         // Update other fields
