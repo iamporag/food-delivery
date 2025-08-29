@@ -6,24 +6,29 @@ import { v2 as cloudinary } from "cloudinary";
 // Create Restaurant
 
 export const createRestaurant = async (req, res) => {
-    try {
-        const picture = req.file ? { url: req.file.path, public_id: req.file.filename } : null;
-        const restaurant = await Restaurant.create({
-            ...req.body,
-            picture,
-        });
+  try {
+    const data = req.body;
 
-        res.status(200).json({
-            message: "Restaurant created successfully",
-            data: restaurant
-        });
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-            data: null
-        });
+    // parse JSON fields
+    if (data.location && typeof data.location === "string") data.location = JSON.parse(data.location);
+    if (data.products && typeof data.products === "string") data.products = JSON.parse(data.products);
+
+    // Cloudinary file
+    if (req.file) {
+      data.picture = {
+        url: req.file.path,       // Cloudinary URL
+        public_id: req.file.filename,
+      };
     }
+
+    const newRestaurant = await Restaurant.create(data);
+    res.status(201).json({ data: newRestaurant });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
 };
+
 
 // Get all Restaurants
 export const getAllRestaurants = async (req, res) => {

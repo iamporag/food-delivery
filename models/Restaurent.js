@@ -16,7 +16,10 @@ const restaurantSchema = new mongoose.Schema(
                 required: false,
             },
         },
-        picture: { type: String },
+        picture: {
+            url: { type: String }
+        },
+        public_id: { type: String },
         rating: { type: Number, default: 0 },
         openTime: { type: String },
         closeTime: { type: String },
