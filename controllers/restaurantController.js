@@ -30,13 +30,31 @@ export const createRestaurant = async (req, res) => {
 };
 
 
-// Get all Restaurants
+// Get all Restaurants with pagination
 export const getAllRestaurants = async (req, res) => {
     try {
-        const restaurants = await Restaurant.find();
+        // Get page from query params, default = 1
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10; // 10 items per page
+        const skip = (page - 1) * limit;
+
+        // Count total documents
+        const total = await Restaurant.countDocuments();
+
+        // Fetch paginated data
+        const restaurants = await Restaurant.find()
+            .skip(skip)
+            .limit(limit);
+
         res.status(200).json({
             message: "Restaurants fetched successfully",
-            data: restaurants
+            data: restaurants,
+            pagination: {
+                totalItems: total,
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                perPage: limit
+            }
         });
     } catch (err) {
         res.status(500).json({
@@ -45,6 +63,7 @@ export const getAllRestaurants = async (req, res) => {
         });
     }
 };
+
 
 // Get a single Restaurant
 export const getRestaurantById = async (req, res) => {
