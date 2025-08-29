@@ -104,15 +104,27 @@ export const updateRestaurant = async (req, res) => {
 
 
 /// Delete a Restaurant
+import Restaurant from "../models/Restaurent.js";
+import cloudinary from "../config/cloudinary.js"; // your cloudinary config
+
 export const deleteRestaurant = async (req, res) => {
     try {
-        const restaurant = await Restaurant.findByIdAndDelete(req.params.id);
+        const restaurant = await Restaurant.findById(req.params.id);
         if (!restaurant) {
             return res.status(404).json({
                 message: "Restaurant not found",
                 data: null
             });
         }
+
+        // Delete image from Cloudinary if exists
+        if (restaurant.picture?.public_id) {
+            await cloudinary.uploader.destroy(restaurant.picture.public_id);
+        }
+
+        // Delete restaurant document
+        await restaurant.deleteOne();
+
         res.status(200).json({
             message: "Restaurant deleted successfully",
             data: restaurant
@@ -124,3 +136,4 @@ export const deleteRestaurant = async (req, res) => {
         });
     }
 };
+
