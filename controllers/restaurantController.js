@@ -6,20 +6,16 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const createRestaurant = async (req, res) => {
     try {
-        const restaurant = new Restaurant({
+        const picture = req.file ? { url: req.file.path, public_id: req.file.filename } : null;
+        const restaurant = new Restaurant.create({
             ...req.body,
-            picture: req.file ? {
-                url: req.file.path,
-                public_id: req.file.filename
-            } : null
+            picture,
         });
-        await restaurant.save();
-        res.status(200).json(
-            {
-                message: "Restaurant created successfully",
-                data: restaurant
-            }
-        )
+
+        res.status(200).json({
+            message: "Restaurant created successfully",
+            data: restaurant
+        });
     } catch (err) {
         res.status(500).json({
             message: err.message,
