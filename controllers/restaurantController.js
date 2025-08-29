@@ -1,4 +1,5 @@
 import Restaurant from "../models/Restaurent.js";
+import { v2 as cloudinary } from "cloudinary";
 
 
 // Create Restaurant
@@ -7,7 +8,10 @@ export const createRestaurant = async (req, res) => {
     try {
         const restaurant = new Restaurant({
             ...req.body,
-            picture: req.file ? `/uploads/${req.file.filename}` : null
+            picture: req.file ? {
+                url: req.file.path,
+                public_id: req.file.filename
+            } : null
         });
         await restaurant.save();
         res.status(200).json(
@@ -62,27 +66,43 @@ export const getRestaurantById = async (req, res) => {
     }
 };
 
+
 // Update a Restaurant
 export const updateRestaurant = async (req, res) => {
     try {
-        const restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const restaurant = await Restaurant.findById(req.params.id);
+
         if (!restaurant) {
-            return res.status(404).json({
-                message: "Restaurant not found",
-                data: null
-            });
+            return res.status(404).json({ message: "Restaurant not found", data: null });
         }
+
+        // If new image uploaded, delete old one from Cloudinary
+        if (req.file) {
+            if (restaurant.picture?.public_id) {
+                await cloudinary.uploader.destroy(restaurant.picture.public_id);
+            }
+
+            restaurant.picture = {
+                url: req.file.path,
+                public_id: req.file.filename,
+            };
+        }
+
+        // Update other fields
+        Object.assign(restaurant, req.body);
+
+        await restaurant.save();
+
         res.status(200).json({
             message: "Restaurant updated successfully",
-            data: restaurant
+            data: restaurant,
         });
     } catch (err) {
-        res.status(500).json({
-            message: err.message,
-            data: null
-        });
+        res.status(500).json({ message: err.message, data: null });
     }
 };
+
+
 
 /// Delete a Restaurant
 export const deleteRestaurant = async (req, res) => {
