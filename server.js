@@ -2,11 +2,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 import dotenv from "dotenv";
-import cors from"cors";
+import cors from "cors";
 import connectDB from "./config/db.js";
-import foodRoutes from"./routes/foodRoutes.js";
-import userRoutes from"./routes/userRoutes.js";
-import restaurantRoutes from"./routes/restaurantRoutes.js";
+import foodRoutes from "./routes/foodRoutes.js";
+import restaurantRoutes from "./routes/restaurantRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import bdQuranRoutes from "./routes/bdQuranRoutes.js";
+
 
 // Fix __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -26,12 +28,13 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
- res.sendFile(path.join(__dirname,"public","home.html"));
+    res.sendFile(path.join(__dirname, "public", "home.html"));
 });
 
 
 
 // API routes
+app.use("/api/bd_quran", bdQuranRoutes);
 app.use("/api/users", userRoutes);
 // app.use("/api/foods", foodRoutes);
 // app.use("/api/orders", orderRoutes);
